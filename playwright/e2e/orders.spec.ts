@@ -1,21 +1,23 @@
 import { test, expect } from '@playwright/test';
 
+// AAA - Arange, Act, Assert
+
 test('Assert order request search', async ({ page }) => {
-  await page.goto('http://localhost:5173/');
+    // Arrange
+    await page.goto('http://localhost:5173/');
+    // Checkpoint 1
+    await expect(page.getByTestId('hero-section').getByRole('heading')).toContainText('Velô Sprint');
 
-  // Checkpoint 1
-  await expect(page.getByTestId('hero-section').getByRole('heading')).toContainText('Velô Sprint');
+    // Act
+    await page.getByRole('link', { name: 'Consultar Pedido' }).click();
+    // Checkpoint 2
+    await expect(page.getByRole('heading')).toContainText('Consultar Pedido');
+    await page.getByTestId('search-order-id').fill('VLO-MOVUFJ');
+    await page.getByTestId('search-order-button').click();
 
-  await page.getByRole('link', { name: 'Consultar Pedido' }).click();
-
-  // Checkpoint 2
-  await expect(page.getByRole('heading')).toContainText('Consultar Pedido');
-
-  await page.getByTestId('search-order-id').fill('VLO-MOVUFJ');
-  await page.getByTestId('search-order-button').click();
-
-  await expect(page.getByTestId('order-result-id')).toBeVisible();
-  await expect(page.getByTestId('order-result-id')).toContainText('VLO-MOVUFJ');
-  await expect(page.getByTestId('order-result-status')).toBeVisible();
-  await expect(page.getByTestId('order-result-status')).toContainText('APROVADO');
+    // Assert
+    await expect(page.getByTestId('order-result-id')).toBeVisible();
+    await expect(page.getByTestId('order-result-id')).toContainText('VLO-MOVUFJ');
+    await expect(page.getByTestId('order-result-status')).toBeVisible();
+    await expect(page.getByTestId('order-result-status')).toContainText('APROVADO');
 });
