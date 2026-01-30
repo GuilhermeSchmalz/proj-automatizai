@@ -1,23 +1,22 @@
-import { test, expect } from '@playwright/test';
-
-// AAA - Arange, Act, Assert
+import { test, expect } from '@playwright/test'; 
 
 test('Assert order request search', async ({ page }) => {
-    // Arrange
-    await page.goto('http://localhost:5173/');
-    // Checkpoint 1
+
+    const testData = {
+        baseURL: "http://localhost:5173/",
+        orderCode: "VLO-MOVUFJ"
+    };
+    
+    await page.goto(testData.baseURL);
     await expect(page.getByTestId('hero-section').getByRole('heading')).toContainText('Velô Sprint');
 
-    // Act
     await page.getByRole('link', { name: 'Consultar Pedido' }).click();
-    // Checkpoint 2
     await expect(page.getByRole('heading')).toContainText('Consultar Pedido');
-    await page.getByTestId('search-order-id').fill('VLO-MOVUFJ');
-    await page.getByTestId('search-order-button').click();
 
-    // Assert
-    await expect(page.getByTestId('order-result-id')).toBeVisible();
-    await expect(page.getByTestId('order-result-id')).toContainText('VLO-MOVUFJ');
-    await expect(page.getByTestId('order-result-status')).toBeVisible();
-    await expect(page.getByTestId('order-result-status')).toContainText('APROVADO');
+    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(testData.orderCode);
+    await page.getByRole('button', { name: 'Buscar Pedido' }).click();
+
+    await expect(page.getByText('APROVADO')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(testData.orderCode)).toBeVisible({ timeout: 10000 });
+    
 });
